@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DynamicModule } from '@nestjs/common';
 import { ConfigService } from './config/config.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import databaseConfig from '../ormconfig';
+import TypeOrmConfigService from './config/typerorm.config.service';
 
 @Injectable()
 export class AppService {
@@ -13,7 +13,9 @@ export class AppService {
 
   constructor(config: ConfigService) {
     this.globalConfig = config;
-    this.db = TypeOrmModule.forRoot();
+    this.db = TypeOrmModule.forRootAsync({
+      useClass: TypeOrmConfigService,
+    });
   }
 
   root(): string {
