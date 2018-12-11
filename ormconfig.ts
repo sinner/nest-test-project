@@ -9,8 +9,8 @@ const databaseConfig = {
     database: env.TYPEORM_DATABASE,
     synchronize: (!!env.TYPEORM_SYNCHRONIZE || true),
     logging: ["query", "error", "schema", "warn", "log", "info"],
-    entities: [__dirname + '/**/src/entities/*{.ts,.js}'],
-    subscribers: [__dirname + '/**/src/entities/subscribers/*{.ts,.js}'],
+    entities: [__dirname + '/**/src/entities/*.entity{.ts,.js}'],
+    subscribers: [__dirname + '/**/src/entities/subscribers/*.subscriber{.ts,.js}'],
     migrations: [__dirname + '/**/src/migrations/*{.ts,.js}'],
     cli: {
         entitiesDir: 'src/entities',

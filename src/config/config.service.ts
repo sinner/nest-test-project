@@ -27,9 +27,9 @@ export class ConfigService implements TypeOrmOptionsFactory {
       database: env.TYPEORM_DATABASE,
       synchronize: (!!env.TYPEORM_SYNCHRONIZE || true),
       logging: ["query", "error", "schema", "warn", "log", "info"],
-      entities: [__dirname + '/**/src/entities/*{.ts,.js}'],
-      subscribers: [__dirname + '/**/src/entities/subscribers/*{.ts,.js}'],
-      migrations: [__dirname + '/**/src/migrations/*{.ts,.js}'],
+      entities: [__dirname + '/../entities/*.entity.ts'],
+      subscribers: [__dirname + '/../entities/subscribers/*.subscriber.ts'],
+      migrations: [__dirname + '/../migrations/*{.ts}'],
       cli: {
           entitiesDir: 'src/entities',
           subscribersDir: 'src/entities/subscribers',

@@ -12,7 +12,7 @@ import {Contains, IsInt, Length, IsEmail, IsFQDN, IsDate, Min, Max, MaxLength, M
 export default class User {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    private id: number;
 
     @Column({
         name: 'uuid',
@@ -191,18 +191,22 @@ export default class User {
                 password?: string,
                 salt?: string,
                 activationCode?: string,
+                isActive?: boolean,
                 roles?: string[],
-                isEmailConfirmed?: boolean,
-                isActive?: boolean) {
+                isEmailConfirmed?: boolean) {
+        this.displayName = displayName;
         this.email = email;
         this.username = username;
         this.password = password;
         this.salt = salt;
-        this.displayName = displayName;
         this.activationCode = activationCode;
+        this.isActive = isActive;
         this.roles = roles;
         this.isEmailConfirmed = isEmailConfirmed;
-        this.isActive = isActive;
+    }
+
+    getId(): number {
+        return this.id;
     }
 
     addRole(role: string): User {
