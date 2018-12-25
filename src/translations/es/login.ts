@@ -2,5 +2,5 @@
  * Login ES
  */
 export const messages = {
-    invalidCredentials: "Credenciales inválidas"
+    invalidCredentials: "Credenciales inválidas",
 };

@@ -29,11 +29,11 @@ export class StandardResponseInterceptor<T> implements NestInterceptor<T, Standa
     return call$.pipe(map(payload => ({
       appName: this.config.get('APP_NAME'),
       statusCode: 200,
-      message: ,
-      version:,
+      message: '',
+      version: '',
       payload,
-      isoDate:,
-      timestamp:,
+      isoDate: '',
+      timestamp: '',
     })));
 
   }

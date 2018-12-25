@@ -2,5 +2,5 @@
  * Login EN
  */
 export const messages = {
-    invalidCredentials: "Invalid credentials"
+    invalidCredentials: "Invalid credentials",
 };
