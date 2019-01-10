@@ -30,6 +30,8 @@
     "class-validator": "^0.9.1",
     "dotenv": "^6.1.0",
     "fastify-swagger": "^0.16.1",
+    "moment": "^2.23.0",
+    "moment-timezone": "^0.5.23",
     "pg": "^7.7.1",
     "postgresql": "0.0.1",
     "reflect-metadata": "^0.1.12",

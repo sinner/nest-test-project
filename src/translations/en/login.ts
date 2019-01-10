@@ -3,4 +3,5 @@
  */
 export const messages = {
     invalidCredentials: "Invalid credentials",
+    successLogin: "Welcome {{ userName }}!",
 };

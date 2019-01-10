@@ -8,5 +8,5 @@ export default interface StandardResponse<T> {
     appName: string;
     error?: ErrorResponse;
     isoDate: string;
-    timestamp: string;
+    timestamp: number;
 }

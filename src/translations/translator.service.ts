@@ -7,6 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { messages as es } from './es';
 import {Request} from 'express';
 import objectExists from 'src/helpers/object-exists.helper';
+import replace from 'src/helpers/key-value-replace.helper';
 
 @Injectable()
 export default class TranslatorService {
@@ -69,12 +70,17 @@ export default class TranslatorService {
     }
 
     /**
-     * Obtiene un mensaje guardado en el directorio messages basado en el lenguaje del Request o un lenguaje pasado como string.
+     * Getting a translation message.
+     *
+     * It gets a message stored in the messages directory based on the Request language or a language passed as string.
+     * The string message could have variables or parameters, they should be represented by {{ parameterName }}
+     * then the "parameters" parameter should contain a json object with the value on this way {parameterName: parameterValue,}
+     * the parameterValue should be a value convertible into string
      *
      * @param messageId string "login.success"
-     * @param context string|Request Si es string debe contener el lenguaje es|en
+     * @param parameter object {parameterName: parameterValue,}
      */
-    public trans(messageId: string): string {
+    public trans(messageId: string, parameters?: any): string {
         let messages = {};
         let message: any = messageId;
 
@@ -91,6 +97,12 @@ export default class TranslatorService {
                 message = messageId;
             }
         }
+
+        const objectConstructor = {}.constructor;
+        if (message !== messageIds && parameters && parameters.constructor === objectConstructor) {
+            message = replace(message, parameters);
+        }
+
         return message;
     }
 

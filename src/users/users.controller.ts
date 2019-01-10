@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Req, Body, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Req, Body, ValidationPipe, HttpException, HttpStatus } from '@nestjs/common';
 import { UserSignUpDto } from 'src/dto/users/sign-up.dto';
 import {getCustomRepository} from "typeorm";
 import User from "../entities/user.entity";
@@ -17,10 +17,11 @@ export class UsersController {
 
     @Get()
     async getAll() {
-        return {
-            message: this.translator.trans('default.success'),
-            config: this.conf,
-        };
+
+        throw new HttpException({
+            hydi: this.translator.trans('login.invalidCredentials'),
+        }, HttpStatus.UNAUTHORIZED);
+
     }
 
     @Post()
