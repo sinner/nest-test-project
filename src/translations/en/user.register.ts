@@ -3,6 +3,7 @@
  */
 export const messages = {
     success: 'The user registration process has been completed successfully',
+    errorData: 'The data provided has some errors',
     emailSubject: 'Welcome',
     valid: {
         email: 'Valid and available email',

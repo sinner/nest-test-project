@@ -5,12 +5,13 @@ import { AppService } from './app.service';
 import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsersModule } from './users/users.module';
+import { UsersModule } from './api/users/users.module';
 
 import { RequestLanguageMiddleware } from './interceptors/request-language.middleware';
 import TranslatorService from './translations/translator.service';
 import { StandardResponseInterceptor } from './interceptors/standard-response.interceptor';
 import { ErrorsResponseInterceptor } from './interceptors/errors-response.interceptor';
+import { CryptoService } from 'src/config/crypto.service';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ErrorsResponseInterceptor } from './interceptors/errors-response.interc
   providers: [
     AppService,
     TranslatorService,
+    CryptoService,
     {
       provide: APP_INTERCEPTOR,
       useClass: StandardResponseInterceptor,

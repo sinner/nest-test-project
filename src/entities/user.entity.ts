@@ -2,8 +2,11 @@ import {
     Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne,
     BeforeInsert, BeforeUpdate, JoinColumn,
 } from 'typeorm';
+import { Exclude } from 'class-transformer';
 
 import {Contains, IsInt, Length, IsEmail, IsFQDN, IsDate, Min, Max, MaxLength, MinLength} from 'class-validator';
+import { IsUserAlreadyExist } from 'src/validators/is-user-exist.validator';
+import { ApiModelProperty } from '@nestjs/swagger';
 
 /**
  * User Entity
@@ -11,16 +14,17 @@ import {Contains, IsInt, Length, IsEmail, IsFQDN, IsDate, Min, Max, MaxLength, M
 @Entity()
 export default class User {
 
+    @Exclude()
     @PrimaryGeneratedColumn()
     private id: number;
 
     @Column({
         name: 'uuid',
         type: 'varchar',
-        length: 150,
+        length: 50,
         unique: true,
     })
-    uuid: string;
+    public uuid: string;
 
     @Column({
         name: 'email',
@@ -32,7 +36,10 @@ export default class User {
     @MaxLength(180, {
         message: 'Email is too long',
     })
-    email: string;
+    @IsUserAlreadyExist({
+        message: "Email $value already exists. Choose another email.",
+    })
+    public email: string;
 
     @Column({
         name: 'email_canonicalized',
@@ -40,7 +47,8 @@ export default class User {
         length: 180,
         unique: true,
     })
-    emailCanonicalized: string;
+    @Exclude()
+    public emailCanonicalized: string;
 
     @Column({
         name: 'username',
@@ -54,7 +62,10 @@ export default class User {
     @MaxLength(50, {
         message: 'Username is too long',
     })
-    username: string;
+    @IsUserAlreadyExist({
+        message: "Username $value already exists. Choose another username.",
+    })
+    public username: string;
 
     @Column({
         name: 'username_canonicalized',
@@ -62,21 +73,24 @@ export default class User {
         length: 50,
         unique: true,
     })
-    usernameCanonicalized: string;
+    @Exclude()
+    public usernameCanonicalized: string;
 
     @Column({
         name: 'password',
         type: 'varchar',
         length: 150,
     })
-    password: string;
+    @Exclude()
+    public password: string;
 
     @Column({
         name: 'salt',
         type: 'varchar',
         length: 150,
     })
-    salt: string;
+    @Exclude()
+    public salt: string;
 
     @Column({
         name: 'first_name',
@@ -87,7 +101,7 @@ export default class User {
     @MaxLength(150, {
         message: 'First name is too long',
     })
-    firstName: string;
+    public firstName: string;
 
     @Column({
         name: 'last_name',
@@ -98,38 +112,38 @@ export default class User {
     @MaxLength(150, {
         message: 'Last name is too long',
     })
-    lastName: string;
+    public lastName: string;
 
     @Column({
         name: 'display_name',
         type: 'varchar',
-        length: 150,
+        length: 300,
         nullable: true,
     })
-    @MaxLength(150, {
+    @MaxLength(300, {
         message: 'Display name is too long',
     })
-    displayName: string;
+    public displayName: string;
 
     @Column({
         name: 'activation_code',
         type: 'varchar',
         length: 150,
     })
-    activationCode: string;
+    public activationCode: string;
 
     @Column({
         name: 'roles',
         type: 'simple-array',
     })
-    roles: string[] = [];
+    public roles: string[] = [];
 
     @Column()
     @CreateDateColumn({
         name: 'created_at',
         type: 'timestamp',
     })
-    createdAt: Date;
+    public createdAt: Date;
 
     @ManyToOne(
         type => User,
@@ -140,14 +154,14 @@ export default class User {
     @JoinColumn({
         name: 'created_by_id',
     })
-    createdBy: User;
+    public createdBy: User;
 
     @Column()
     @UpdateDateColumn({
         name: 'updated_at',
         type: 'timestamp',
     })
-    updatedAt: Date;
+    public updatedAt: Date;
 
     @ManyToOne(
         type => User,
@@ -157,23 +171,25 @@ export default class User {
     @JoinColumn({
         name: 'updated_by_id',
     })
-    updatedBy: User;
+    public updatedBy: User;
 
     @Column({
         name: 'is_email_confirmed',
         type: 'boolean',
         default: false,
     })
-    isEmailConfirmed: boolean;
+    public isEmailConfirmed: boolean;
 
     @Column({
         name: 'is_active',
         type: 'boolean',
         default: true,
     })
-    isActive: boolean;
+    public isActive: boolean;
 
     /**
+     * To create a new user object you must not use this constructor directly
+     * You must use the createUser method that belongs to UserService class instead
      *
      * @param {string} email
      * @param {string} username
@@ -185,56 +201,87 @@ export default class User {
      * @param {boolean} isEmailConfirmed
      * @param {boolean} isActive
      */
-    constructor(displayName?: string,
-                email?: string,
+    constructor(email?: string,
                 username?: string,
                 password?: string,
-                salt?: string,
-                activationCode?: string,
-                isActive?: boolean,
                 roles?: string[],
-                isEmailConfirmed?: boolean) {
+                isEmailConfirmed?: boolean,
+                isActive?: boolean,
+                displayName?: string,
+                salt?: string,
+                activationCode?: string) {
         this.displayName = displayName;
         this.email = email;
         this.username = username;
         this.password = password;
         this.salt = salt;
         this.activationCode = activationCode;
-        this.isActive = isActive;
-        this.roles = roles;
-        this.isEmailConfirmed = isEmailConfirmed;
+        this.isActive = isActive || false;
+        this.roles = roles || [];
+        this.isEmailConfirmed = isEmailConfirmed || false;
     }
 
-    getId(): number {
+    public getId(): number {
         return this.id;
     }
 
-    addRole(role: string): User {
+    private standardizedRoleName(role: string): string {
+        let roleStandardized = role.toUpperCase();
+        if (roleStandardized.indexOf('ROLE_') !== 0) {
+            roleStandardized = `ROLE_${roleStandardized}`;
+        }
+        return roleStandardized;
+    }
+
+    public addRole(role: string): User {
         if (!this.roles) {
             this.roles = [];
         }
-        if (this.roles.indexOf(role) === -1) {
-            this.roles.push(role);
+        const roleStandardized = this.standardizedRoleName(role);
+        if (this.roles.indexOf(roleStandardized) === -1) {
+            this.roles.push(roleStandardized);
         }
         return this;
     }
 
-    hasRole(role: string): boolean {
+    public hasRole(role: string): boolean {
         if (this.roles.indexOf(role) === -1 && role !== 'ROLE_USER') {
             return false;
         }
         return true;
     }
 
+    public setUsernameCanonicalized(username?: string): void {
+        if (username) {
+            this.usernameCanonicalized = (username) ? username.toLowerCase() : null;
+        }
+        else {
+            this.usernameCanonicalized = (this.username) ? this.username.toLowerCase() : null;
+        }
+    }
+
+    public setEmailCanonicalized(email?: string): void {
+        if (email) {
+            this.emailCanonicalized = (email) ? email.toLowerCase() : null;
+        }
+        else {
+            this.emailCanonicalized = (this.email) ? this.email.toLowerCase() : null;
+        }
+    }
+
     @BeforeInsert()
     beforeCreate() {
         this.createdAt = new Date();
         this.updatedAt = this.createdAt;
+        this.updatedBy = this.createdBy;
+        if (!this.displayName) {
+            this.displayName = `${this.firstName} ${this.lastName}`;
+        }
         if (!this.emailCanonicalized) {
-            this.emailCanonicalized = (this.email) ? this.email.toLowerCase() : null;
+            this.setEmailCanonicalized(this.email);
         }
         if (!this.usernameCanonicalized) {
-            this.usernameCanonicalized = (this.username) ? this.username.toLowerCase() : null;
+            this.setUsernameCanonicalized(this.username);
         }
     }
 

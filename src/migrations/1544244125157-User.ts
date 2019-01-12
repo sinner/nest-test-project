@@ -3,11 +3,11 @@ import {MigrationInterface, QueryRunner} from "typeorm";
 export class User1544244125157 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<any> {
-        await queryRunner.query(`CREATE TABLE "user" ("id" SERIAL NOT NULL, "uuid" character varying(150) NOT NULL,
+        await queryRunner.query(`CREATE TABLE "user" ("id" SERIAL NOT NULL, "uuid" character varying(50) NOT NULL,
         "email" character varying(180) NOT NULL, "email_canonicalized" character varying(180) NOT NULL,
         "username" character varying(50) NOT NULL, "username_canonicalized" character varying(50) NOT NULL,
         "password" character varying(150) NOT NULL, "salt" character varying(150) NOT NULL, "first_name" character varying(150),
-        "last_name" character varying(150), "display_name" character varying(150), "activation_code" character varying(150) NOT NULL,
+        "last_name" character varying(150), "display_name" character varying(300), "activation_code" character varying(150) NOT NULL,
         "roles" text NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
         "is_email_confirmed" boolean NOT NULL DEFAULT false, "is_active" boolean NOT NULL DEFAULT true, "created_by_id" integer,
         "updated_by_id" integer, CONSTRAINT "UQ_a95e949168be7b7ece1a2382fed" UNIQUE ("uuid"),
