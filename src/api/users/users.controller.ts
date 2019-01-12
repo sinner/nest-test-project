@@ -2,16 +2,18 @@ import { Controller, Get, Post, Put, Delete, Req, Body, ValidationPipe,
     HttpException, HttpStatus, ClassSerializerInterceptor, UseInterceptors, SerializeOptions } from '@nestjs/common';
 import {getCustomRepository} from "typeorm";
 import { config } from 'rxjs';
-import { UserSignUpDto } from 'src/dto/users/sign-up.dto';
-import User from "src/entities/user.entity";
-import { UserRepository } from "src/entities/repositories/user.repository";
-import TranslatorService from 'src/translations/translator.service';
-import { ConfigService } from 'src/config/config.service';
+import { UserSignUpDto } from './../../dto/users/sign-up.dto';
+import User from "./../../entities/user.entity";
+import { UserRepository } from "./../../entities/repositories/user.repository";
+import TranslatorService from './../../translations/translator.service';
+import { ConfigService } from './../../config/config.service';
 import { UsersService } from './users.service';
-import { ApiResponse } from '@nestjs/swagger';
+import { ApiResponse, ApiUseTags, ApiBearerAuth, ApiImplicitHeader } from '@nestjs/swagger';
 import { ValidationError } from 'class-validator';
-import StandardResponse from 'src/dto/standard-response.interface';
+import StandardResponse from './../../dto/standard-response.interface';
+import { UserSignUpResponse, UserSignUpErrorResponse } from 'src/dto/users/sign-up-response.dto';
 
+@ApiBearerAuth()
 @Controller('users')
 export class UsersController {
 
@@ -37,9 +39,9 @@ export class UsersController {
 
     }
 
-    @UseInterceptors(ClassSerializerInterceptor)
-    @ApiResponse({ status: 201, description: 'user.register.success', type: User })
-    @ApiResponse({ status: 400, description: 'user.register.errorData'})
+    @ApiImplicitHeader({name: 'Authorization', required: true})
+    @ApiResponse({ status: 201, description: 'user.register.success', type: UserSignUpResponse })
+    @ApiResponse({ status: 400, description: 'user.register.errorData', type: UserSignUpErrorResponse})
     @Post()
     async create(@Body() userData: UserSignUpDto): Promise<User> {
 

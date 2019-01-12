@@ -1,7 +1,7 @@
 import {registerDecorator, ValidationOptions, ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface} from "class-validator";
 import { getCustomRepository, getRepository } from "typeorm";
 import { UserRepository } from 'src/entities/repositories/user.repository';
-import User from "src/entities/user.entity";
+import User from "./../entities/user.entity";
 
 @ValidatorConstraint({ async: true })
 export class IsUserAlreadyExistConstraint implements ValidatorConstraintInterface {

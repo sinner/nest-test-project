@@ -1,5 +1,5 @@
 export default interface ErrorResponse {
-    details?: any;
-    message?: string;
-    errorClass?: string;
-  }
+  details?: any;
+  response?: any;
+  type?: string;
+}

@@ -17,8 +17,4 @@ export class AppService {
     });
   }
 
-  root(): string {
-    return 'Hello Nest!';
-  }
-
 }

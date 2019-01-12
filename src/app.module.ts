@@ -11,7 +11,14 @@ import { RequestLanguageMiddleware } from './interceptors/request-language.middl
 import TranslatorService from './translations/translator.service';
 import { StandardResponseInterceptor } from './interceptors/standard-response.interceptor';
 import { ErrorsResponseInterceptor } from './interceptors/errors-response.interceptor';
-import { CryptoService } from 'src/config/crypto.service';
+import { CryptoService } from './config/crypto.service';
+import { RequestRequiredHeadersMiddleware } from './interceptors/request-required-headers.middleware';
+import { AuthService } from './api/auth/auth.service';
+import { AuthModule } from './api/auth/auth.module';
+import { UsersService } from './api/users/users.service';
+import { PassportModule } from '@nestjs/passport';
+import { JwtModule } from '@nestjs/jwt';
+import * as envVar from './config/env.util';
 
 @Module({
   imports: [
@@ -19,13 +26,23 @@ import { CryptoService } from 'src/config/crypto.service';
       imports: [ConfigModule],
       useExisting: ConfigService,
     }),
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    JwtModule.register({
+      secretOrPrivateKey: envVar.default.JWT_SECRET_KEY || 'secret-key',
+      signOptions: {
+        expiresIn: envVar.default.JWT_TTL || 86400,
+      },
+    }),
     UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
     TranslatorService,
     CryptoService,
+    UsersService,
+    AuthService,
     {
       provide: APP_INTERCEPTOR,
       useClass: StandardResponseInterceptor,

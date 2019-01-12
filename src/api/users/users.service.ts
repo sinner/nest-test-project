@@ -1,22 +1,24 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import User from '../../entities/user.entity';
-import { CryptoService } from 'src/config/crypto.service';
-import { UserSignUpDto } from 'src/dto/users/sign-up.dto';
-import { ConfigService } from 'src/config/config.service';
+import { CryptoService } from './../../config/crypto.service';
+import { UserSignUpDto } from './../../dto/users/sign-up.dto';
+import { ConfigService } from './../../config/config.service';
 import { getCustomRepository } from 'typeorm';
-import { UserRepository } from 'src/entities/repositories/user.repository';
-import { Roles } from 'src/dto/users/roles.dto';
+import { UserRepository } from './../../entities/repositories/user.repository';
+import { Roles } from './../../dto/users/roles.dto';
 import moment = require('moment');
 import { validate } from 'class-validator';
 import { TransformClassToPlain } from 'class-transformer';
+import TranslatorService from './../../translations/translator.service';
 
 @Injectable()
 export class UsersService {
 
   constructor(
-    private crypto: CryptoService,
-    private config: ConfigService,
-  ) {}
+    private readonly crypto: CryptoService,
+    private readonly config: ConfigService,
+    private readonly translator: TranslatorService,
+  ) { }
 
   @TransformClassToPlain()
   public async createUser(
@@ -37,13 +39,13 @@ export class UsersService {
     if (createdBy) {
       user.createdBy = createdBy;
     }
-    this.hashPassword(user, userData.plainPassword);
+    user.password = this.getHashedPassword(user, userData.plainPassword);
     this.setUUID(user);
     this.generateActivationCode(user);
 
     const errors = await validate(user);
     if (errors.length > 0) {
-        throw new BadRequestException(errors);
+        throw new BadRequestException(errors, this.translator.trans('user.register.errorData'));
     } else {
       await getCustomRepository(UserRepository).save(user);
     }
@@ -69,10 +71,24 @@ export class UsersService {
     return user;
   }
 
-  public hashPassword(user: User, plainPassword: string): User {
-    user.salt = this.config.get('APP_SECRET') + this.crypto.generateRandom(64);
-    user.password = this.crypto.encrypt(plainPassword, user.salt);
-    return user;
+  public getHashedPassword(user: User, plainPassword: string): string {
+    if (!user.salt) {
+      user.salt = this.config.get('APP_SECRET') + this.crypto.generateRandom(64);
+    }
+    return this.crypto.encrypt(plainPassword, user.salt);
+  }
+
+  public isValidPassword(user: User, plainPassword: string): boolean {
+    return this.crypto.decrypt(user.password, user.salt) === plainPassword;
+  }
+
+  public async findByUsernameOrEmail(usernameOrEmail: string): Promise<User | undefined> {
+    return await getCustomRepository(UserRepository).findByUsernameOrEmail(usernameOrEmail);
+  }
+
+  public async setLastLoginDate(user: User): Promise<void> {
+    user.lastLoginAt = new Date();
+    await getCustomRepository(UserRepository).save(user);
   }
 
 }

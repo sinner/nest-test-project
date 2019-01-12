@@ -1,7 +1,7 @@
 import * as path from 'path';
 import * as glob from 'glob';
 import { Injectable, NestMiddleware, MiddlewareFunction } from '@nestjs/common';
-import { ConfigService } from '../config/config.service';
+import { ConfigService } from 'src/config/config.service';
 
 @Injectable()
 export class RequestLanguageMiddleware implements NestMiddleware {

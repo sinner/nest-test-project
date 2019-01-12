@@ -11,13 +11,14 @@ export class StandardResponseInterceptor<T> implements NestInterceptor<T, Standa
 
   private statusCode: number = 200;
   private message: string = 'success';
-  private version: string = '0.0.1';
+  private version: string;
   private payload: T;
   private appName: string;
   private error?: ErrorResponse;
 
   constructor(private config: ConfigService) {
       this.appName = this.config.get('APP_NAME');
+      this.version = this.config.get('APP_VERSION');
   }
 
   intercept(

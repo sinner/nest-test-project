@@ -2,7 +2,7 @@ import * as path from 'path';
 import * as glob from 'glob';
 import { Injectable } from '@nestjs/common';
 import { DynamicModule } from '@nestjs/common';
-import { ConfigService } from '../config/config.service';
+import { ConfigService } from 'src/config/config.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { messages as es } from './es';
 import {Request} from 'express';

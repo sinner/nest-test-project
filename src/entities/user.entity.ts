@@ -5,7 +5,7 @@ import {
 import { Exclude } from 'class-transformer';
 
 import {Contains, IsInt, Length, IsEmail, IsFQDN, IsDate, Min, Max, MaxLength, MinLength} from 'class-validator';
-import { IsUserAlreadyExist } from 'src/validators/is-user-exist.validator';
+import { IsUserAlreadyExist } from './../validators/is-user-exist.validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 
 /**
@@ -18,6 +18,7 @@ export default class User {
     @PrimaryGeneratedColumn()
     private id: number;
 
+    @ApiModelProperty()
     @Column({
         name: 'uuid',
         type: 'varchar',
@@ -26,6 +27,7 @@ export default class User {
     })
     public uuid: string;
 
+    @ApiModelProperty()
     @Column({
         name: 'email',
         type: 'varchar',
@@ -50,6 +52,7 @@ export default class User {
     @Exclude()
     public emailCanonicalized: string;
 
+    @ApiModelProperty()
     @Column({
         name: 'username',
         type: 'varchar',
@@ -92,6 +95,7 @@ export default class User {
     @Exclude()
     public salt: string;
 
+    @ApiModelProperty()
     @Column({
         name: 'first_name',
         type: 'varchar',
@@ -103,6 +107,7 @@ export default class User {
     })
     public firstName: string;
 
+    @ApiModelProperty()
     @Column({
         name: 'last_name',
         type: 'varchar',
@@ -114,6 +119,7 @@ export default class User {
     })
     public lastName: string;
 
+    @ApiModelProperty()
     @Column({
         name: 'display_name',
         type: 'varchar',
@@ -130,14 +136,25 @@ export default class User {
         type: 'varchar',
         length: 150,
     })
+    @Exclude()
     public activationCode: string;
 
+    @ApiModelProperty()
     @Column({
         name: 'roles',
         type: 'simple-array',
     })
     public roles: string[] = [];
 
+    @ApiModelProperty()
+    @Column({
+        name: 'last_login_at',
+        type: 'timestamp',
+        nullable: true,
+    })
+    public lastLoginAt: Date;
+
+    @ApiModelProperty()
     @Column()
     @CreateDateColumn({
         name: 'created_at',
@@ -156,6 +173,7 @@ export default class User {
     })
     public createdBy: User;
 
+    @ApiModelProperty()
     @Column()
     @UpdateDateColumn({
         name: 'updated_at',
@@ -173,6 +191,7 @@ export default class User {
     })
     public updatedBy: User;
 
+    @ApiModelProperty()
     @Column({
         name: 'is_email_confirmed',
         type: 'boolean',
@@ -180,6 +199,7 @@ export default class User {
     })
     public isEmailConfirmed: boolean;
 
+    @ApiModelProperty()
     @Column({
         name: 'is_active',
         type: 'boolean',

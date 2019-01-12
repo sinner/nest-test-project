@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from 'src/config/config.service';
+import { ConfigService } from './../config/config.service';
 import SimpleCrypto from "simple-crypto-js";
 import * as CryptoJS from 'crypto-js';
 
