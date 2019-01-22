@@ -30,6 +30,10 @@ export class UserRepository extends Repository<User> {
         return await this.findByEmail(usernameOrEmail);
     }
 
+    public async findByUsernameAndUUID(username: string, uuid: string): Promise<User | undefined> {
+        return await this.findOne({ username, uuid });
+    }
+
     public async findByActivationCode(activationCode: string): Promise<User | undefined> {
         return await this.findOne({ activationCode });
     }

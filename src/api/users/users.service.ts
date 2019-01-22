@@ -86,6 +86,10 @@ export class UsersService {
     return await getCustomRepository(UserRepository).findByUsernameOrEmail(usernameOrEmail);
   }
 
+  public async findByUsernameAndUUID(username: string, uuid: string): Promise<User | undefined> {
+    return await getCustomRepository(UserRepository).findByUsernameAndUUID(username, uuid);
+  }
+
   public async setLastLoginDate(user: User): Promise<void> {
     user.lastLoginAt = new Date();
     await getCustomRepository(UserRepository).save(user);

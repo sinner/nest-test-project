@@ -1,5 +1,6 @@
 import { Controller, Get, Post, Put, Delete, Req, Body, ValidationPipe,
-    HttpException, HttpStatus, ClassSerializerInterceptor, UseInterceptors, SerializeOptions } from '@nestjs/common';
+    HttpException, HttpStatus, ClassSerializerInterceptor,
+    UseInterceptors, SerializeOptions, UseGuards } from '@nestjs/common';
 import {getCustomRepository} from "typeorm";
 import { config } from 'rxjs';
 import { UserSignUpDto } from './../../dto/users/sign-up.dto';
@@ -12,6 +13,11 @@ import { ApiResponse, ApiUseTags, ApiBearerAuth, ApiImplicitHeader } from '@nest
 import { ValidationError } from 'class-validator';
 import StandardResponse from './../../dto/standard-response.interface';
 import { UserSignUpResponse, UserSignUpErrorResponse } from 'src/dto/users/sign-up-response.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { getRepository } from 'typeorm';
+import { Request } from 'express';
+import { JwtAuthGuard } from './../../api/auth/guards/jwt-auth.guard';
+import { JWTTokenResponse } from './../../dto/users/jwt.token.response.dto';
 
 @ApiBearerAuth()
 @Controller('users')
@@ -48,6 +54,25 @@ export class UsersController {
         const user: User = await this.userService.createUser(userData);
 
         return user;
+    }
+
+    /**
+     * My Profile (myProfile)
+     * This action fetch the user information given an Authorization JWT Token
+     *
+     * @param request
+     */
+    @ApiImplicitHeader({name: 'Authorization', required: true})
+    @ApiImplicitHeader({name: 'Accept-Language', required: false})
+    @ApiResponse({ status: 200, description: 'default.success', type: User })
+    @ApiResponse({ status: 401, description: 'user.badAuthToken'})
+    @UseGuards(JwtAuthGuard)
+    @Get('/my-profile')
+    async myProfile(@Req() request: any): Promise<object> {
+        request.statusMessage = this.translator.trans('default.success');
+        return {
+            user: request.user,
+        };
     }
 
 }

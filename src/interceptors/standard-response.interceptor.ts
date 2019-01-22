@@ -5,6 +5,7 @@ import StandardResponse from '../dto/standard-response.interface';
 import { ConfigService } from 'src/config/config.service';
 import ErrorResponse from 'src/dto/error-response.interface';
 import * as moment from 'moment';
+import {classToPlain} from "class-transformer";
 
 @Injectable()
 export class StandardResponseInterceptor<T> implements NestInterceptor<T, StandardResponse<T>> {
@@ -26,13 +27,16 @@ export class StandardResponseInterceptor<T> implements NestInterceptor<T, Standa
     call$: Observable<T>,
   ): Observable<StandardResponse<T>> {
 
+    const request = context.switchToHttp().getRequest();
+
     return call$.pipe(map((payload: any) => {
+      const serializedPayload: any = classToPlain(payload);
       return {
         appName: this.appName,
         statusCode: this.statusCode,
-        message: (undefined !== payload.message) ? payload.message : '',
+        message: (undefined !== request.statusMessage && undefined !== request.statusMessage) ? request.statusMessage : '',
         version: this.version,
-        payload,
+        payload: serializedPayload,
         isoDate: moment().format('YYYY-MM-DD HH:mm:ssZ'),
         timestamp: moment().unix(),
       };

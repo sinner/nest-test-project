@@ -1,4 +1,9 @@
-import { Module } from '@nestjs/common';
+import {
+  Module,
+  NestModule,
+  RequestMethod,
+  MiddlewareConsumer,
+} from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { AuthService } from './auth.service';
@@ -8,6 +13,8 @@ import TranslatorService from './../../translations/translator.service';
 import { UsersService } from '../users/users.service';
 import { CryptoService } from './../../config/crypto.service';
 import { UsersModule } from '../users/users.module';
+import { AuthController } from './auth.controller';
+import { RequestLanguageMiddleware } from './../../interceptors/request-language.middleware';
 
 @Module({
   imports: [
@@ -20,6 +27,7 @@ import { UsersModule } from '../users/users.module';
       },
     }),
   ],
+  controllers: [AuthController],
   providers: [
     AuthService,
     JwtStrategy,
@@ -28,4 +36,10 @@ import { UsersModule } from '../users/users.module';
     CryptoService,
   ],
 })
-export class AuthModule {}
+export class AuthModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(RequestLanguageMiddleware)
+      .forRoutes(AuthController);
+  }
+}

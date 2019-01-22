@@ -12,6 +12,9 @@ import { AuthGuard } from '@nestjs/passport';
 import { getRepository } from 'typeorm';
 import { Request } from 'express';
 import { JwtAuthGuard } from './api/auth/guards/jwt-auth.guard';
+import { JWTTokenResponse } from './dto/users/jwt.token.response.dto';
+import StandardResponse from './dto/standard-response.interface';
+import User from './entities/user.entity';
 
 @Controller()
 export class AppController {
@@ -22,21 +25,5 @@ export class AppController {
     private readonly authService: AuthService,
     private readonly userService: UsersService,
   ) {}
-
-  @ApiResponse({ status: 201, description: 'user.register.success', type: UserSignUpResponse })
-  @ApiResponse({ status: 401, description: 'user.register.errorData', type: UserSignUpErrorResponse})
-  @Post('/login')
-  async login(@Body() loginData: LoginDto): Promise<object> {
-    return this.authService.validateUser(loginData);
-  }
-
-  @ApiImplicitHeader({name: 'Authorization', required: true})
-  @ApiResponse({ status: 201, description: 'user.register.success', type: UserSignUpResponse })
-  @ApiResponse({ status: 401, description: 'user.register.errorData', type: UserSignUpErrorResponse})
-  @UseGuards(AuthGuard('jwt'))
-  @Get('/my-profile')
-  async myProfile(@Req() request: any): Promise<object> {
-    return request.user;
-  }
 
 }

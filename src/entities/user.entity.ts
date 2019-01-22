@@ -2,7 +2,9 @@ import {
     Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne,
     BeforeInsert, BeforeUpdate, JoinColumn,
 } from 'typeorm';
-import { Exclude } from 'class-transformer';
+import { Exclude, Type, Transform } from 'class-transformer';
+import {Moment} from "moment";
+import * as moment from "moment";
 
 import {Contains, IsInt, Length, IsEmail, IsFQDN, IsDate, Min, Max, MaxLength, MinLength} from 'class-validator';
 import { IsUserAlreadyExist } from './../validators/is-user-exist.validator';
@@ -152,6 +154,7 @@ export default class User {
         type: 'timestamp',
         nullable: true,
     })
+    @Transform(value => moment(value).format('YYYY-MM-DD HH:mm:ssZ'))
     public lastLoginAt: Date;
 
     @ApiModelProperty()
@@ -160,6 +163,7 @@ export default class User {
         name: 'created_at',
         type: 'timestamp',
     })
+    @Transform(value => moment(value).format('YYYY-MM-DD HH:mm:ssZ'))
     public createdAt: Date;
 
     @ManyToOne(
@@ -179,6 +183,7 @@ export default class User {
         name: 'updated_at',
         type: 'timestamp',
     })
+    @Transform(value => moment(value).format('YYYY-MM-DD HH:mm:ssZ'))
     public updatedAt: Date;
 
     @ManyToOne(

@@ -3,6 +3,8 @@ import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
+import { RequestLanguageMiddleware } from './interceptors/request-language.middleware';
+
 declare const module: any;
 
 async function bootstrap() {

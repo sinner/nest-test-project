@@ -43,9 +43,10 @@ export default class TranslatorService {
     }
 
     protected getMessages(language: string): any {
-        console.log('000: ', this.acceptableLanguages);
-        console.log('001: ', this.acceptableLanguages.indexOf(language));
-        console.log('002:', language);
+        // console.log('000: ', this.acceptableLanguages);
+        // console.log('001: ', this.acceptableLanguages.indexOf(language));
+        // console.log('002:', language);
+        // console.log('003:', this.config);
         if (this.acceptableLanguages.indexOf(language) >= 0) {
             return this.messagesOf(language);
         } else {

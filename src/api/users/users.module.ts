@@ -15,9 +15,12 @@ import { RequestRequiredHeadersMiddleware } from './../../interceptors/request-r
 import TranslatorService from './../../translations/translator.service';
 import { ConfigService } from './../../config/config.service';
 import { CryptoService } from './../../config/crypto.service';
+import { AuthModule } from './../../api/auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, UserRepository])],
+  imports: [
+    TypeOrmModule.forFeature([User, UserRepository]),
+  ],
   controllers: [UsersController],
   providers: [
     TranslatorService,
@@ -29,6 +32,6 @@ export class UsersModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(RequestLanguageMiddleware, RequestRequiredHeadersMiddleware)
-      .forRoutes({ path: 'users', method: RequestMethod.ALL });
+      .forRoutes(UsersController);
   }
 }
