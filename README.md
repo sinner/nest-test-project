@@ -15,6 +15,16 @@
 
 ## Installation
 
+The first step should be copy the .env.dist into .env.
+
+```bash
+$ cp .env.dist .env
+```
+
+The second step should be review the .env file and assign the variable of your relational database connection and create the database with its proper name.
+
+The thirs step should be install the npm libraries required by the project and run the migrations.
+
 ```bash
 $ npm install
 $ ts-node ./node_modules/.bin/typeorm migration:run -t false
