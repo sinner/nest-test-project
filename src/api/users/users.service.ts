@@ -1,6 +1,6 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import User from '../../entities/user.entity';
-import { CryptoService } from './../../config/crypto.service';
+import { CryptoService } from './../../helpers/crypto.service';
 import { UserSignUpDto } from './../../dto/users/sign-up.dto';
 import { ConfigService } from './../../config/config.service';
 import { getCustomRepository } from 'typeorm';

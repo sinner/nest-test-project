@@ -11,7 +11,7 @@ import { JwtStrategy } from './jwt.strategy';
 import * as envVar from './../../config/env.util';
 import TranslatorService from './../../translations/translator.service';
 import { UsersService } from '../users/users.service';
-import { CryptoService } from './../../config/crypto.service';
+import { CryptoService } from './../../helpers/crypto.service';
 import { UsersModule } from '../users/users.module';
 import { AuthController } from './auth.controller';
 import { RequestLanguageMiddleware } from './../../interceptors/request-language.middleware';

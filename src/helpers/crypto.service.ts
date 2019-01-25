@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from './../config/config.service';
 import SimpleCrypto from "simple-crypto-js";
 import * as CryptoJS from 'crypto-js';
+import env from '../config/env.util';
 
 @Injectable()
 export class CryptoService {
@@ -12,8 +13,11 @@ export class CryptoService {
 
   private hashService: any;
 
-  constructor(private config: ConfigService) {
-    this.simpleCrypto = new SimpleCrypto(config.get('APP_SECRET'));
+  private appSecret: string;
+
+  constructor(private config?: ConfigService) {
+    this.appSecret = (config) ? config.get('APP_SECRET') : env.APP_SECRET;
+    this.simpleCrypto = new SimpleCrypto(this.appSecret);
     this.hashService = require('object-hash');
   }
 
@@ -51,6 +55,10 @@ export class CryptoService {
 
   public hash(data: object | string | number | boolean, options?: object): string {
     return this.hashService(data, options);
+  }
+
+  public getSecret(): string {
+    return this.appSecret || "";
   }
 
 }

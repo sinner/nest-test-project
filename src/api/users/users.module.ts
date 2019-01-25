@@ -14,7 +14,7 @@ import { RequestLanguageMiddleware } from './../../interceptors/request-language
 import { RequestRequiredHeadersMiddleware } from './../../interceptors/request-required-headers.middleware';
 import TranslatorService from './../../translations/translator.service';
 import { ConfigService } from './../../config/config.service';
-import { CryptoService } from './../../config/crypto.service';
+import { CryptoService } from './../../helpers/crypto.service';
 import { AuthModule } from './../../api/auth/auth.module';
 
 @Module({

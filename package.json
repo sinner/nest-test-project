@@ -1,8 +1,8 @@
 {
   "name": "tera-pingpong-api",
   "version": "0.0.0",
-  "description": "description",
-  "author": "",
+  "description": "Tera Ping-Pong is an application to manage the ",
+  "author": "José Gabriel González",
   "license": "MIT",
   "scripts": {
     "build": "tsc",

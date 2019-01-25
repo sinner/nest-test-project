@@ -11,7 +11,7 @@ import { RequestLanguageMiddleware } from './interceptors/request-language.middl
 import TranslatorService from './translations/translator.service';
 import { StandardResponseInterceptor } from './interceptors/standard-response.interceptor';
 import { ErrorsResponseInterceptor } from './interceptors/errors-response.interceptor';
-import { CryptoService } from './config/crypto.service';
+import { CryptoService } from './helpers/crypto.service';
 import { RequestRequiredHeadersMiddleware } from './interceptors/request-required-headers.middleware';
 import { AuthService } from './api/auth/auth.service';
 import { AuthModule } from './api/auth/auth.module';
