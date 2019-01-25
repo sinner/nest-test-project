@@ -30,6 +30,8 @@ $ npm install
 $ ts-node ./node_modules/.bin/typeorm migration:run -t false
 ```
 
+You could enter on the API documentation clicking on the [Swagger interface](http://localhost:3000/api/index.html#/) http://localhost:3000/api/index.html#/.
+
 ## Running the app
 
 ```bash
