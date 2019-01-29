@@ -60,7 +60,7 @@ export default class Application {
     @Column({
         name: 'platform',
         type: 'varchar',
-        length: 5,
+        length: 15,
         nullable: true,
     })
     @IsIn(['web', 'ios', 'android', 'desktop', 'windows-mobile'])
