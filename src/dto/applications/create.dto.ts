@@ -1,6 +1,5 @@
-import { IsString, IsInt, IsIn, MinLength, MaxLength, IsEmail, IsNotEmpty, IsSurrogatePair } from 'class-validator';
+import { IsIn, MinLength, MaxLength, IsNotEmpty } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
-import { HasSameValueAs } from '../validators/has-same-value-as.validator';
 
 export class CreateApplicationDto {
 
@@ -24,19 +23,5 @@ export class CreateApplicationDto {
     @IsNotEmpty()
     @IsIn(['web', 'ios', 'android', 'desktop', 'windows-mobile'])
     readonly platform: string;
-
-    @ApiModelProperty()
-    @IsNotEmpty()
-    @MaxLength(60, {
-        message: 'Application name is too long',
-    })
-    readonly apiKey: string;
-
-    @ApiModelProperty()
-    @IsNotEmpty()
-    @MaxLength(100, {
-        message: 'API Key Secret is too long',
-    })
-    readonly apiKeySecret: string;
 
 }

@@ -146,7 +146,7 @@ export default class Application {
     })
     public isActive: boolean;
 
-    constructor(partial: Partial<Application>) {
+    constructor(partial?: Partial<Application>) {
         Object.assign(this, partial);
     }
 

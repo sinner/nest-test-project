@@ -1,15 +1,16 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import User from '../../entities/user.entity';
 import { CryptoService } from './../../helpers/crypto.service';
-import { UserSignUpDto } from './../../dto/users/sign-up.dto';
+import { CreateApplicationDto } from './../../dto/applications/create.dto';
 import { ConfigService } from './../../config/config.service';
 import { getCustomRepository } from 'typeorm';
 import { UserRepository } from './../../entities/repositories/user.repository';
-import { Roles } from './../../dto/users/roles.dto';
 import moment = require('moment');
 import { validate } from 'class-validator';
 import { TransformClassToPlain } from 'class-transformer';
 import TranslatorService from './../../translations/translator.service';
+import Application from '../../entities/application.entity';
+import { ApplicationRepository } from '../../entities/repositories/application.repository';
 
 @Injectable()
 export class ApplicationService {
@@ -21,54 +22,58 @@ export class ApplicationService {
   ) { }
 
   @TransformClassToPlain()
-  public async createUser(
-    userData: UserSignUpDto,
+  public async createApplication(
+    appData: CreateApplicationDto,
     createdBy?: User,
-    confirmEmail: boolean = false,
-    roles: string[] = [Roles.ROLE_USER],
-  ): Promise<User> {
-    const user = new User();
-    user.username = userData.username.toLowerCase();
-    user.email = userData.email.toLowerCase();
-    user.firstName = userData.firstName;
-    user.lastName = userData.lastName;
-    user.roles = roles;
-    user.displayName = `${user.firstName} ${user.lastName}`;
-    user.isActive = true;
-    user.createdAt = new Date();
-    if (createdBy) {
-      user.createdBy = createdBy;
-    }
-    user.password = this.getHashedPassword(user, userData.plainPassword);
-    this.setUUID(user);
-    this.generateActivationCode(user);
+  ): Promise<Application> {
 
-    const errors = await validate(user);
+    let application = await this.findByUserAndAppPlatform(createdBy, appData.platform);
+
+    if (application) {
+      throw new BadRequestException(application, this.translator.trans('application.limit.perPlatform.exceeded'));
+    }
+
+    application = new Application();
+    application.name = appData.name;
+    application.description = appData.description;
+    application.platform = appData.platform;
+    application.createdBy = createdBy;
+    application.isActive = true;
+    application.createdAt = new Date();
+    application.apiKey = this.generateApiKey(application);
+    application.apiKeySecret = this.generateApiKeySecret(application);
+    this.setUUID(application);
+
+    const errors = await validate(application);
     if (errors.length > 0) {
         throw new BadRequestException(errors, this.translator.trans('user.register.errorData'));
     } else {
-      await getCustomRepository(UserRepository).save(user);
+      await getCustomRepository(ApplicationRepository).save(application);
     }
 
-    return user;
+    return application;
   }
 
-  public setCanonicalizedFields(user: User): User {
-    user.setEmailCanonicalized(user.email);
-    user.setUsernameCanonicalized(user.username);
-    return user;
+  public async findByUserAndAppPlatform(user: User, platform: string): Promise<Application> {
+    const application: Application = await getCustomRepository(ApplicationRepository).findByUserAndAppPlatform(user, platform);
+    return application;
   }
 
-  public setUUID(user: User): User {
-    if (!user.uuid) {
-      user.uuid = this.crypto.hash(user.email + user.username);
+  public generateApiKey(app: Application): string {
+    const apiKey: string = this.crypto.hash(app.name + app.createdBy.username + app.platform + moment().format('YYYY-MM-DD HH:mm:ss Z'));
+    return apiKey.substring(0, 60);
+  }
+
+  public generateApiKeySecret(app: Application): string {
+    const apiKeySecret: string = this.crypto.hash(app.apiKey) + this.crypto.hash(moment().format('YYYY-MM-DD HH:mm:ss Z'));
+    return apiKeySecret.substring(0, 100);
+  }
+
+  public setUUID(app: Application): Application {
+    if (!app.uuid) {
+      app.uuid = this.crypto.hash(app.name + app.createdBy.username + app.platform);
     }
-    return user;
-  }
-
-  public generateActivationCode(user: User): User {
-    user.activationCode = this.crypto.hash(user.email + user.username + moment().format('YYYY-MM-DD HH:mm:ss Z'));
-    return user;
+    return app;
   }
 
   public getHashedPassword(user: User, plainPassword: string): string {

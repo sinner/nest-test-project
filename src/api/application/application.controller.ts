@@ -18,6 +18,7 @@ import { getRepository } from 'typeorm';
 import { Request } from 'express';
 import { JwtAuthGuard } from './../../api/auth/guards/jwt-auth.guard';
 import { JWTTokenResponse } from './../../dto/users/jwt.token.response.dto';
+import { CreateApplicationDto } from './../../dto/applications/create.dto';
 
 @ApiBearerAuth()
 @Controller('application')
@@ -30,8 +31,7 @@ export class ApplicationController {
     ) {}
 
     /**
-     * My Profile (myProfile)
-     * This action fetch the user information given an Authorization JWT Token
+     * Create a new application
      *
      * @param request
      */
@@ -40,20 +40,20 @@ export class ApplicationController {
     @ApiResponse({ status: 200, description: 'default.success', type: User })
     @ApiResponse({ status: 401, description: 'user.badAuthToken'})
     @UseGuards(JwtAuthGuard)
-    @Get('/my-profile')
-    async myProfile(@Req() request: any): Promise<object> {
+    @Post('/')
+    async create(@Req() request: any, @Body() applicationData: CreateApplicationDto​​​​): Promise<object> {
         request.statusMessage = this.translator.trans('default.success');
-        return {
-            user: request.user,
-        };
+        const user = request.user;
+        this.applicationService.createApplication();
+        return {};
     }
 
     @ApiImplicitHeader({name: 'Authorization', required: true})
     @ApiImplicitHeader({name: 'Accept-Language', required: false})
     @ApiResponse({ status: 201, description: 'user.register.success', type: UserSignUpResponse })
     @ApiResponse({ status: 400, description: 'user.register.errorData', type: UserSignUpErrorResponse})
-    @Post()
-    async create(@Body() userData: UserSignUpDto): Promise<User> {
+    @Put('/main-picture')
+    async uploadMainPicture(@Body() userData: UserSignUpDto): Promise<User> {
 
         const user: User = await this.applicationService.createUser(userData);
 

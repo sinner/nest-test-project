@@ -16,10 +16,12 @@ import TranslatorService from './../../translations/translator.service';
 import { ConfigService } from './../../config/config.service';
 import { CryptoService } from './../../helpers/crypto.service';
 import { AuthModule } from './../../api/auth/auth.module';
+import Application from './../../entities/application.entity';
+import { ApplicationRepository } from '../../entities/repositories/application.repository';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, UserRepository]),
+    TypeOrmModule.forFeature([Application, ApplicationRepository]),
   ],
   controllers: [ApplicationController],
   providers: [
@@ -28,7 +30,7 @@ import { AuthModule } from './../../api/auth/auth.module';
     CryptoService,
   ],
 })
-export class UsersModule implements NestModule {
+export class ApplicationModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(RequestLanguageMiddleware, RequestRequiredHeadersMiddleware)
