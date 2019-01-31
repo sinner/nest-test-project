@@ -146,9 +146,9 @@ export default class Application {
     })
     public isActive: boolean;
 
-    constructor(partial?: Partial<Application>) {
-        Object.assign(this, partial);
-    }
+   // constructor(partial?: Partial<Application>) {
+   //     Object.assign(this, partial);
+   // }
 
     public getId(): number {
         return this.id;

@@ -19,6 +19,7 @@ import { Request } from 'express';
 import { JwtAuthGuard } from './../../api/auth/guards/jwt-auth.guard';
 import { JWTTokenResponse } from './../../dto/users/jwt.token.response.dto';
 import { CreateApplicationDto } from './../../dto/applications/create.dto';
+import Application from './../../entities/application.entity';
 
 @ApiBearerAuth()
 @Controller('application')
@@ -37,46 +38,15 @@ export class ApplicationController {
      */
     @ApiImplicitHeader({name: 'Authorization', required: true})
     @ApiImplicitHeader({name: 'Accept-Language', required: false})
-    @ApiResponse({ status: 200, description: 'default.success', type: User })
+    @ApiResponse({ status: 200, description: 'default.success', type: Application })
     @ApiResponse({ status: 401, description: 'user.badAuthToken'})
     @UseGuards(JwtAuthGuard)
     @Post('/')
-    async create(@Req() request: any, @Body() applicationData: CreateApplicationDto​​​​): Promise<object> {
+    async create(@Req() request: any, @Body() applicationData: CreateApplicationDto​​): Promise<object> {
         request.statusMessage = this.translator.trans('default.success');
         const user = request.user;
-        this.applicationService.createApplication();
+        this.applicationService.createApplication(applicationData);
         return {};
-    }
-
-    @ApiImplicitHeader({name: 'Authorization', required: true})
-    @ApiImplicitHeader({name: 'Accept-Language', required: false})
-    @ApiResponse({ status: 201, description: 'user.register.success', type: UserSignUpResponse })
-    @ApiResponse({ status: 400, description: 'user.register.errorData', type: UserSignUpErrorResponse})
-    @Put('/main-picture')
-    async uploadMainPicture(@Body() userData: UserSignUpDto): Promise<User> {
-
-        const user: User = await this.applicationService.createUser(userData);
-
-        return user;
-    }
-
-    /**
-     * My Profile (myProfile)
-     * This action fetch the user information given an Authorization JWT Token
-     *
-     * @param request
-     */
-    @ApiImplicitHeader({name: 'Authorization', required: true})
-    @ApiImplicitHeader({name: 'Accept-Language', required: false})
-    @ApiResponse({ status: 200, description: 'default.success', type: User })
-    @ApiResponse({ status: 401, description: 'user.badAuthToken'})
-    @UseGuards(JwtAuthGuard)
-    @Get('/my-profile')
-    async myProfile(@Req() request: any): Promise<object> {
-        request.statusMessage = this.translator.trans('default.success');
-        return {
-            user: request.user,
-        };
     }
 
 }

@@ -46,7 +46,7 @@ export class ApplicationService {
 
     const errors = await validate(application);
     if (errors.length > 0) {
-        throw new BadRequestException(errors, this.translator.trans('user.register.errorData'));
+        throw new BadRequestException(errors, this.translator.trans('application.create.errorData'));
     } else {
       await getCustomRepository(ApplicationRepository).save(application);
     }

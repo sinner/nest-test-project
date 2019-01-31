@@ -18,6 +18,8 @@ import { CryptoService } from './../../helpers/crypto.service';
 import { AuthModule } from './../../api/auth/auth.module';
 import Application from './../../entities/application.entity';
 import { ApplicationRepository } from '../../entities/repositories/application.repository';
+import { UsersModule } from '../users/users.module';
+import { AppModule } from '../../app.module';
 
 @Module({
   imports: [

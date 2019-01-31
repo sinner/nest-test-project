@@ -9,7 +9,7 @@ const environment = (process.env.NODE_ENV !== undefined && typeof process.env.NO
   providers: [
     {
       provide: ConfigService,
-      useValue: new ConfigService(`${environment}.env`),
+      useValue: new ConfigService(`.env`),
     },
   ],
   exports: [ConfigService],
