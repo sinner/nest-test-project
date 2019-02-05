@@ -47,13 +47,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const status: number = exception.status || this.statusCode;
     const message = (exception.message && undefined !== exception.message.error) ? exception.message.error : this.translator.trans('default.error');
 
-    console.log(exception);
-
-    console.log(response);
-
     response
-      .status(status)
-      .json({
+      .send({
         appName: this.appName,
         statusCode: status,
         message: message.toString('utf8'),
@@ -63,10 +58,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
         timestamp: moment().unix(),
         error: {
             type: this.getErrorType(exception),
-            response: response.message,
-            details: {
-              path: request.url,
-            },
+            path: request.url,
+            details: exception,
         },
     });
   }

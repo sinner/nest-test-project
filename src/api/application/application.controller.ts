@@ -20,6 +20,7 @@ import { JwtAuthGuard } from './../../api/auth/guards/jwt-auth.guard';
 import { JWTTokenResponse } from './../../dto/users/jwt.token.response.dto';
 import { CreateApplicationDto } from './../../dto/applications/create.dto';
 import Application from './../../entities/application.entity';
+import { Roles } from '../auth/decorators/roles.decorator';
 
 @ApiBearerAuth()
 @Controller('application')
@@ -36,13 +37,14 @@ export class ApplicationController {
      *
      * @param request
      */
-    @ApiOperation({ title: `Create a new Application and it will return the 
+    @ApiOperation({ title: `Create a new Application and it will return the
                             API Key and API Key Secret to be able to use this API (application.application.controller::create)` })
     @ApiImplicitHeader({name: 'Authorization', required: true})
     @ApiImplicitHeader({name: 'Accept-Language', required: false})
     @ApiResponse({ status: 200, description: 'default.success', type: Application })
     @ApiResponse({ status: 401, description: 'user.badAuthToken'})
     @UseGuards(JwtAuthGuard)
+    @Roles(User.ROLE_SUPER_ADMIN, User.ROLE_ADMIN)
     @Post('/')
     async create(@Req() request: any, @Body() applicationData: CreateApplicationDto): Promise<Application> {
         request.statusMessage = this.translator.trans('default.success');

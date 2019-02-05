@@ -8,13 +8,16 @@
     "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es6",
+    "target": "es2016",
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./"
   },
   "include": [
     "src/**/*", "ormconfig.ts"
+  ],
+  "lib": [
+    "es7"
   ],
   "exclude": [
     "node_modules",

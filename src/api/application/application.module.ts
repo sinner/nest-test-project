@@ -20,6 +20,8 @@ import Application from './../../entities/application.entity';
 import { ApplicationRepository } from '../../entities/repositories/application.repository';
 import { UsersModule } from '../users/users.module';
 import { AppModule } from '../../app.module';
+import { APP_GUARD } from '@nestjs/core';
+import { RolesGuard } from '../auth/guards/roles.guard';
 
 @Module({
   imports: [
@@ -30,6 +32,10 @@ import { AppModule } from '../../app.module';
     TranslatorService,
     ApplicationService,
     CryptoService,
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
   ],
 })
 export class ApplicationModule implements NestModule {

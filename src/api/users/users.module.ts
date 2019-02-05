@@ -16,6 +16,8 @@ import TranslatorService from './../../translations/translator.service';
 import { ConfigService } from './../../config/config.service';
 import { CryptoService } from './../../helpers/crypto.service';
 import { AuthModule } from './../../api/auth/auth.module';
+import { APP_GUARD } from '@nestjs/core';
+import { RolesGuard } from '../auth/guards/roles.guard';
 
 @Module({
   imports: [

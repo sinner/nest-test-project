@@ -39,7 +39,7 @@
         "object-literal-sort-keys": false,
         "no-unused-expression": false,
         "max-classes-per-file": [
-            false
+            false,
         ],
         "variable-name": [
             false

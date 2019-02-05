@@ -16,6 +16,11 @@ import { ApiModelProperty } from '@nestjs/swagger';
 @Entity()
 export default class User {
 
+    public static ROLE_USER: string = 'ROLE_USER';
+    public static ROLE_APPLICATION: string = 'ROLE_APPLICATION';
+    public static ROLE_ADMIN: string = 'ROLE_ADMIN';
+    public static ROLE_SUPER_ADMIN: string = 'ROLE_SUPER_ADMIN';
+
     @Exclude()
     @PrimaryGeneratedColumn()
     private id: number;
