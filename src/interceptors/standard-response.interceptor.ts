@@ -1,11 +1,22 @@
-import { Injectable, NestInterceptor, ExecutionContext } from '@nestjs/common';
-import { Observable } from 'rxjs';
+import {
+  Injectable,
+  NestInterceptor,
+  ExecutionContext,
+  HttpStatus,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { HttpException } from '@nestjs/common';
 import { map } from 'rxjs/operators';
-import StandardResponse from '../dto/standard-response.interface';
-import { ConfigService } from 'src/config/config.service';
-import ErrorResponse from 'src/dto/error-response.interface';
-import * as moment from 'moment';
 import {classToPlain} from "class-transformer";
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import StandardResponse from '../dto/standard-response.interface';
+import { ConfigService } from '../config/config.service';
+import ErrorResponse from '../dto/error-response.interface';
+import * as moment from 'moment';
+import TranslatorService from '../translations/translator.service';
+import { Validator, ValidationError } from 'class-validator';
+import { LoginDto } from './../dto/users/login.dto';
 
 @Injectable()
 export class StandardResponseInterceptor<T> implements NestInterceptor<T, StandardResponse<T>> {

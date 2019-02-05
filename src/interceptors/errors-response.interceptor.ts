@@ -9,10 +9,10 @@ import { HttpException } from '@nestjs/common';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import StandardResponse from '../dto/standard-response.interface';
-import { ConfigService } from 'src/config/config.service';
-import ErrorResponse from 'src/dto/error-response.interface';
+import { ConfigService } from '../config/config.service';
+import ErrorResponse from '../dto/error-response.interface';
 import * as moment from 'moment';
-import TranslatorService from 'src/translations/translator.service';
+import TranslatorService from '../translations/translator.service';
 import { Validator, ValidationError } from 'class-validator';
 import { LoginDto } from './../dto/users/login.dto';
 
@@ -48,8 +48,6 @@ export class ErrorsResponseInterceptor<T> implements NestInterceptor<T, Standard
             const message = (err.message && undefined !== err.message.error) ? err.message.error : this.translator.trans('default.error');
 
             const httpStatus: number = err.status || this.statusCode;
-
-            console.log(err);
 
             return [{
                 appName: this.appName,

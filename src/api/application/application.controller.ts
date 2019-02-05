@@ -9,7 +9,7 @@ import { UserRepository } from "./../../entities/repositories/user.repository";
 import TranslatorService from './../../translations/translator.service';
 import { ConfigService } from './../../config/config.service';
 import { ApplicationService } from './application.service';
-import { ApiResponse, ApiUseTags, ApiBearerAuth, ApiImplicitHeader } from '@nestjs/swagger';
+import { ApiResponse, ApiUseTags, ApiBearerAuth, ApiImplicitHeader, ApiOperation } from '@nestjs/swagger';
 import { ValidationError } from 'class-validator';
 import StandardResponse from './../../dto/standard-response.interface';
 import { UserSignUpResponse, UserSignUpErrorResponse } from 'src/dto/users/sign-up-response.dto';
@@ -36,17 +36,19 @@ export class ApplicationController {
      *
      * @param request
      */
+    @ApiOperation({ title: `Create a new Application and it will return the 
+                            API Key and API Key Secret to be able to use this API (application.application.controller::create)` })
     @ApiImplicitHeader({name: 'Authorization', required: true})
     @ApiImplicitHeader({name: 'Accept-Language', required: false})
     @ApiResponse({ status: 200, description: 'default.success', type: Application })
     @ApiResponse({ status: 401, description: 'user.badAuthToken'})
     @UseGuards(JwtAuthGuard)
     @Post('/')
-    async create(@Req() request: any, @Body() applicationData: CreateApplicationDto​​): Promise<object> {
+    async create(@Req() request: any, @Body() applicationData: CreateApplicationDto): Promise<Application> {
         request.statusMessage = this.translator.trans('default.success');
         const user = request.user;
-        this.applicationService.createApplication(applicationData);
-        return {};
+        const app: Application = await this.applicationService.createApplication(applicationData);
+        return app;
     }
 
 }

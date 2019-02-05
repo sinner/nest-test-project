@@ -1,5 +1,5 @@
 import { Module, NestModule, RequestMethod, MiddlewareConsumer } from '@nestjs/common';
-import { APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from './config/config.module';
@@ -20,6 +20,7 @@ import { ApplicationModule } from './api/application/application.module';
 
 import TranslatorService from './translations/translator.service';
 import * as envVar from './config/env.util';
+import { AllExceptionsFilter } from './interceptors/all-exceptions.filter';
 
 @Module({
   imports: [
@@ -52,6 +53,10 @@ import * as envVar from './config/env.util';
     {
       provide: APP_INTERCEPTOR,
       useClass: ErrorsResponseInterceptor,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionsFilter,
     },
   ],
 })
