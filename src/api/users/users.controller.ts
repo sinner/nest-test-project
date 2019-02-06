@@ -70,6 +70,7 @@ export class UsersController {
     @Get('/my-profile')
     async myProfile(@Req() request: any): Promise<object> {
         request.statusMessage = this.translator.trans('default.success');
+        console.log(request);
         return {
             user: request.user,
         };

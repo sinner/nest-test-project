@@ -48,10 +48,6 @@ import { RolesGuard } from './api/auth/guards/roles.guard';
     UsersService,
     AuthService,
     {
-      provide: APP_GUARD,
-      useClass: RolesGuard,
-    },
-    {
       provide: APP_INTERCEPTOR,
       useClass: StandardResponseInterceptor,
     },
