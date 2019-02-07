@@ -43,9 +43,9 @@ export class ApplicationController {
     @ApiImplicitHeader({name: 'Accept-Language', required: false})
     @ApiResponse({ status: 200, description: 'default.success', type: Application })
     @ApiResponse({ status: 401, description: 'user.badAuthToken'})
-    @Roles(User.ROLE_SUPER_ADMIN, User.ROLE_ADMIN)
     @UseGuards(JwtAuthGuard)
     @Post('/')
+    @Roles(User.ROLE_SUPER_ADMIN, User.ROLE_ADMIN)
     async create(@Req() request: any, @Body() applicationData: CreateApplicationDto): Promise<Application> {
         request.statusMessage = this.translator.trans('default.success');
         const user = request.user;

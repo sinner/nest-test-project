@@ -7,8 +7,13 @@ import {
 import { ApplicationController } from './application.controller';
 import { ApplicationService } from './application.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
+import { AuthService } from './../auth/auth.service';
+import { JwtStrategy } from './../auth/jwt.strategy';
 import { UserRepository } from './../../entities/repositories/user.repository';
 import User from './../../entities/user.entity';
+import * as envVar from './../../config/env.util';
 
 import { RequestLanguageMiddleware } from './../../interceptors/request-language.middleware';
 import { RequestRequiredHeadersMiddleware } from './../../interceptors/request-required-headers.middleware';
@@ -25,17 +30,14 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 
 @Module({
   imports: [
+    AuthModule,
     TypeOrmModule.forFeature([Application, ApplicationRepository]),
   ],
   controllers: [ApplicationController],
   providers: [
-    TranslatorService,
     ApplicationService,
     CryptoService,
-    {
-      provide: APP_GUARD,
-      useClass: RolesGuard,
-    },
+    TranslatorService,
   ],
 })
 export class ApplicationModule implements NestModule {
