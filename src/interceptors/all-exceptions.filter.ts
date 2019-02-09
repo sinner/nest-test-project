@@ -20,6 +20,7 @@ import * as moment from 'moment';
 import TranslatorService from '../translations/translator.service';
 import { Validator, ValidationError } from 'class-validator';
 import { LoginDto } from './../dto/users/login.dto';
+import { TokenExpiredError } from 'jsonwebtoken';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -44,14 +45,14 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
     const request = ctx.getRequest();
-    const status: number = exception.status || this.statusCode;
-    const message = (exception.message && undefined !== exception.message.error) ? exception.message.error : this.translator.trans('default.error');
+    const status: number = this.getExceptionStatus(exception);
+    const message = this.getExceptionMessage(exception);
 
     response
       .send({
         appName: this.appName,
         statusCode: status,
-        message: message.toString('utf8'),
+        message: message,
         version: this.version,
         payload: this.getErrorPayload(exception),
         isoDate: moment().format('YYYY-MM-DD HH:mm:ssZ'),
@@ -62,6 +63,25 @@ export class AllExceptionsFilter implements ExceptionFilter {
             details: exception,
         },
     });
+  }
+
+  getExceptionMessage(exception: any): any {
+    let message: any = this.translator.trans('default.error');
+    if(exception.message && undefined !== exception.message.error) {
+        message = exception.message.error;
+    }
+    if(exception instanceof TokenExpiredError) {
+        message = this.translator.trans('auth.user.expiredAuthToken');
+    }
+    return message;
+  }
+
+  getExceptionStatus (exception: any): number {
+    let status = exception.status || this.statusCode;
+    if(exception instanceof TokenExpiredError) {
+        status = 401;
+    }
+    return status;
   }
 
   getErrorType(err: any): string {

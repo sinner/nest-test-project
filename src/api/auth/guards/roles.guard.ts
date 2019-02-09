@@ -46,9 +46,10 @@ export class RolesGuard implements CanActivate {
 
     if (request.headers.authorization && request.headers.authorization.toString().split(' ')[0] === 'Bearer') {
         const token: string = request.headers.authorization.toString().split(' ')[1];
-        const decoded = this.jwtService.verify(token, this.config.get('JWT_SECRET_KEY'));
+        const decodedToken = this.jwtService.verify(token, this.config.get('JWT_SECRET_KEY'));
+        const rolesFromToken = decodedToken.roles; // Depending on performance and security you could check the roles from the JWT Token or from DB
         const user: User = await getCustomRepository(UserRepository).findOne({
-          uuid: decoded.uuid,
+          uuid: decodedToken.uuid,
         });
         const requiredRolesHierarchy = _.uniq(this.getRoleHierarchy(requiredRoles));
         const hasRole = () => user.roles.some((role: string) => requiredRoles.includes(role));

@@ -1,7 +1,7 @@
 import { Get, Controller, Post, Body, UseGuards, Req } from '@nestjs/common';
 import { AppService } from './../../app.service';
 import TranslatorService from './../../translations/translator.service';
-import { ApiImplicitHeaders, ApiResponse, ApiImplicitHeader, ApiOperation } from '@nestjs/swagger';
+import { ApiImplicitHeaders, ApiResponse, ApiImplicitHeader, ApiOperation, ApiUseTags } from '@nestjs/swagger';
 import { LoginDto } from './../../dto/users/login.dto';
 import { UserSignUpResponse } from './../../dto/users/sign-up-response.dto';
 import { UserSignUpErrorResponse } from './../../dto/users/sign-up-response.dto';
@@ -16,7 +16,8 @@ import { JWTTokenResponse } from './../../dto/users/jwt.token.response.dto';
 import StandardResponse from './../../dto/standard-response.interface';
 import User from './../../entities/user.entity';
 
-@Controller()
+@ApiUseTags('Auth')
+@Controller("api/v1/auth")
 export class AuthController {
 
   constructor(

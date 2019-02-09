@@ -1,4 +1,4 @@
-import { IsIn, MinLength, MaxLength, IsNotEmpty } from 'class-validator';
+import { IsIn, MinLength, MaxLength, IsNotEmpty, IsString } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 
 export class CreateApplicationDto {
@@ -23,5 +23,12 @@ export class CreateApplicationDto {
     @IsNotEmpty()
     @IsIn(['web', 'ios', 'android', 'desktop', 'windows-mobile'])
     readonly platform: string;
+
+    @ApiModelProperty()
+    @IsString()
+    @MaxLength(150, {
+        message: 'Owner user UUID is too long',
+    })
+    readonly ownerUuid?: string;
 
 }

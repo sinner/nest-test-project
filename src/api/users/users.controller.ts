@@ -19,8 +19,9 @@ import { Request } from 'express';
 import { JwtAuthGuard } from './../../api/auth/guards/jwt-auth.guard';
 import { JWTTokenResponse } from './../../dto/users/jwt.token.response.dto';
 
+@ApiUseTags('User')
 @ApiBearerAuth()
-@Controller('users')
+@Controller('api/v1/users')
 export class UsersController {
 
     constructor(
@@ -33,7 +34,7 @@ export class UsersController {
     async getError() {
 
         throw new HttpException({
-            hydi: this.translator.trans('login.invalidCredentials'),
+            message: this.translator.trans('login.invalidCredentials'),
         }, HttpStatus.UNAUTHORIZED);
 
     }
@@ -70,7 +71,6 @@ export class UsersController {
     @Get('/my-profile')
     async myProfile(@Req() request: any): Promise<object> {
         request.statusMessage = this.translator.trans('default.success');
-        console.log(request);
         return {
             user: request.user,
         };

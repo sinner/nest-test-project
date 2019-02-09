@@ -119,6 +119,17 @@ export default class Application {
     })
     public createdBy: User;
 
+    @ManyToOne(
+        type => User,
+        {
+            nullable: true,
+        },
+    )
+    @JoinColumn({
+        name: 'owner_id',
+    })
+    public owner: User;
+
     @ApiModelProperty()
     @Column()
     @UpdateDateColumn({
