@@ -281,6 +281,14 @@ export default class User {
         return true;
     }
 
+    public hasOneOfTheseRoles(roles: Array<string>): boolean {
+        let filteredRoles = this.roles.filter((userRole) => roles.includes(userRole)?true:false);
+        if (filteredRoles.length === 0) {
+            return false;
+        }
+        return true;
+    }
+
     public setUsernameCanonicalized(username?: string): void {
         if (username) {
             this.usernameCanonicalized = (username) ? username.toLowerCase() : null;
