@@ -139,20 +139,14 @@ export class ApplicationService {
     uuid: string,
     user?: User,
   ): Promise<boolean> {
-    
     const application = await this.findByUUID(uuid);
-
     this.userHasRequiredPermission(user, application);
-
     await getCustomRepository(ApplicationRepository).remove(application);
-
     return true;
-
   }
 
-  public async findByUserAndAppPlatform(user: User, platform: string): Promise<Application> {
-    const application: Application = await getCustomRepository(ApplicationRepository).findByUserAndAppPlatform(user, platform);
-    return application;
+  public findByUserAndAppPlatform(user: User, platform: string): Promise<Application> {
+    return getCustomRepository(ApplicationRepository).findByUserAndAppPlatform(user, platform);
   }
 
   public generateApiKey(app: Application): string {
@@ -172,15 +166,15 @@ export class ApplicationService {
     return app;
   }
 
-  public async userHasRequiredPermission(user: User, application: Application): Promise<boolean> {
+  public userHasRequiredPermission(user: User, application: Application): boolean {
     if (!user.hasRole(User.ROLE_SUPER_ADMIN) && !user.hasRole(User.ROLE_ADMIN) && application.owner.getId() !== user.getId()) {
       throw new ForbiddenException(null, this.translator.trans('default.forbidden'));
     }
     return true;
   }
 
-  public async findByUUID(uuid: string): Promise<Application | undefined> {
-    const application = await getCustomRepository(ApplicationRepository).findOne({ uuid });
+  public findByUUID(uuid: string): Promise<Application | undefined> {
+    const application = getCustomRepository(ApplicationRepository).findOne({ uuid });
     if (!application) {
       throw new NotFoundException(application, this.translator.trans('application.notFound'));
     }

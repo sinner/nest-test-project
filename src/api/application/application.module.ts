@@ -27,6 +27,7 @@ import { UsersModule } from '../users/users.module';
 import { AppModule } from '../../app.module';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from '../auth/guards/roles.guard';
+import { UsersService } from '../users/users.service';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { RolesGuard } from '../auth/guards/roles.guard';
     ApplicationService,
     CryptoService,
     TranslatorService,
+    UsersService
   ],
 })
 export class ApplicationModule implements NestModule {
